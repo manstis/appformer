@@ -4872,7 +4872,7 @@ public class GridGroupingTest extends BaseGridTest {
                           0);
 
         //Move row
-        data.moveRowsTo(4,
+        data.moveRowsTo(2,
                         new ArrayList<GridRow>() {{
                             add(row1);
                             add(row2);
@@ -4989,7 +4989,7 @@ public class GridGroupingTest extends BaseGridTest {
                           0);
 
         //Move row
-        data.moveRowsTo(4,
+        data.moveRowsTo(3,
                         new ArrayList<GridRow>() {{
                             add(row1);
                             add(row2);
