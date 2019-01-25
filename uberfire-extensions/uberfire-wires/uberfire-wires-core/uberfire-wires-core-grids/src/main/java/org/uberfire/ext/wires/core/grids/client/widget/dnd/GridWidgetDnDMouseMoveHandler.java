@@ -18,6 +18,7 @@ package org.uberfire.ext.wires.core.grids.client.widget.dnd;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.ait.lienzo.client.core.event.NodeMouseMoveEvent;
 import com.ait.lienzo.client.core.event.NodeMouseMoveHandler;
@@ -237,6 +238,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
             activeColumns.add(column);
             state.setActiveGridWidget(view);
             state.setActiveGridColumns(activeColumns);
+            state.setActiveGridColumnsInitialWidths(getActiveColumnsInitialWidths(activeColumns));
             state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING);
             setCursor(Style.Cursor.COL_RESIZE);
         }
@@ -293,6 +295,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
 
                                     state.setActiveGridWidget(view);
                                     state.setActiveGridColumns(blockColumns);
+                                    state.setActiveGridColumnsInitialWidths(getActiveColumnsInitialWidths(blockColumns));
                                     state.setActiveHeaderMetaData(md);
                                     state.setOperation(GridWidgetDnDHandlersState.GridWidgetHandlersOperation.COLUMN_MOVE_PENDING);
                                     setCursor(Style.Cursor.MOVE);
@@ -654,5 +657,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
                 ((HasDOMElementResources) column).destroyResources();
             }
         }
+    }
+
+    private List<Double> getActiveColumnsInitialWidths(final List<GridColumn<?>> activeColumns) {
+        return activeColumns.stream().map(GridColumn::getWidth).collect(Collectors.toList());
     }
 }

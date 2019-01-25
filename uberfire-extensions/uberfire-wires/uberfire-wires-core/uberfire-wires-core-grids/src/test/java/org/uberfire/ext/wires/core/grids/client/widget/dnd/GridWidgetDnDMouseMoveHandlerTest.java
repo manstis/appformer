@@ -101,6 +101,9 @@ public class GridWidgetDnDMouseMoveHandlerTest {
     private ArgumentCaptor<List<GridColumn<?>>> uiColumnsArgumentCaptor;
 
     @Captor
+    private ArgumentCaptor<List<Double>> uiColumnsInitialWidthsArgumentCaptor;
+
+    @Captor
     private ArgumentCaptor<List<GridRow>> uiRowsArgumentCaptor;
 
     private BaseGridData uiModel;
@@ -386,12 +389,20 @@ public class GridWidgetDnDMouseMoveHandlerTest {
                times(1)).setOperation(eq(GridWidgetHandlersOperation.COLUMN_MOVE_PENDING));
         verify(state,
                times(1)).setActiveGridColumns(uiColumnsArgumentCaptor.capture());
+        verify(state,
+               times(1)).setActiveGridColumnsInitialWidths(uiColumnsInitialWidthsArgumentCaptor.capture());
 
         final List<GridColumn<?>> uiColumns = uiColumnsArgumentCaptor.getValue();
         assertNotNull(uiColumns);
         assertEquals(1,
                      uiColumns.size());
         assertTrue(uiColumns.contains(uiColumn2));
+
+        final List<Double> uiColumnsWidths = uiColumnsInitialWidthsArgumentCaptor.getValue();
+        assertNotNull(uiColumnsWidths);
+        assertEquals(1,
+                     uiColumnsWidths.size());
+        assertTrue(uiColumnsWidths.contains(100.0));
     }
 
     @Test
@@ -430,12 +441,20 @@ public class GridWidgetDnDMouseMoveHandlerTest {
                times(1)).setOperation(eq(GridWidgetHandlersOperation.COLUMN_RESIZE_PENDING));
         verify(state,
                times(1)).setActiveGridColumns(uiColumnsArgumentCaptor.capture());
+        verify(state,
+               times(1)).setActiveGridColumnsInitialWidths(uiColumnsInitialWidthsArgumentCaptor.capture());
 
         final List<GridColumn<?>> uiColumns = uiColumnsArgumentCaptor.getValue();
         assertNotNull(uiColumns);
         assertEquals(1,
                      uiColumns.size());
         assertTrue(uiColumns.contains(uiColumn2));
+
+        final List<Double> uiColumnsWidths = uiColumnsInitialWidthsArgumentCaptor.getValue();
+        assertNotNull(uiColumnsWidths);
+        assertEquals(1,
+                     uiColumnsWidths.size());
+        assertTrue(uiColumnsWidths.contains(100.0));
     }
 
     @Test

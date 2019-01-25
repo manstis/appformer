@@ -31,8 +31,9 @@ public class GridWidgetDnDHandlersState {
 
     private GridWidget activeGridWidget = null;
     private GridColumn.HeaderMetaData activeHeaderMetaData = null;
-    private List<GridColumn<?>> activeGridColumns = new ArrayList<GridColumn<?>>();
-    private List<GridRow> activeGridRows = new ArrayList<GridRow>();
+    private List<GridColumn<?>> activeGridColumns = new ArrayList<>();
+    private List<Double> activeGridColumnsInitialWidths = new ArrayList<>();
+    private List<GridRow> activeGridRows = new ArrayList<>();
 
     private GridWidgetHandlersOperation operation = GridWidgetHandlersOperation.NONE;
     private Style.Cursor cursor = Style.Cursor.DEFAULT;
@@ -101,6 +102,22 @@ public class GridWidgetDnDHandlersState {
     public void setActiveGridColumns(final List<GridColumn<?>> activeGridColumns) {
         this.activeGridColumns.clear();
         this.activeGridColumns.addAll(activeGridColumns);
+    }
+
+    /**
+     * Returns the initial width of the active columns being affected by the current the operation.
+     * @return
+     */
+    public List<Double> getActiveGridColumnsInitialWidths() {
+        return Collections.unmodifiableList(activeGridColumnsInitialWidths);
+    }
+
+    /**
+     * Sets the initial widths of the active columns being affected by the current the operation.
+     */
+    public void setActiveGridColumnsInitialWidths(final List<Double> activeGridColumnsInitialWidths) {
+        this.activeGridColumnsInitialWidths.clear();
+        this.activeGridColumnsInitialWidths.addAll(activeGridColumnsInitialWidths);
     }
 
     /**
