@@ -139,6 +139,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
             if (cy < headerMaxY) {
                 //Check for column moving
                 findMovableColumns(gridWidget,
+                                   renderingInformation,
                                    headerHeight - headerRowsYOffset,
                                    headerMinY,
                                    cx,
@@ -146,11 +147,13 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
             } else {
                 //Check for movable rows
                 findMovableRows(gridWidget,
+                                renderingInformation,
                                 cx,
                                 cy);
 
                 //Check for column resizing
                 findResizableColumn(gridWidget,
+                                    renderingInformation,
                                     cx);
             }
 
@@ -168,7 +171,7 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
         }
     }
 
-    private void setCursor(final Style.Cursor cursor) {
+    protected void setCursor(final Style.Cursor cursor) {
         for (IMediator mediator : layer.getViewport().getMediators()) {
             if (mediator instanceof RestrictedMousePanMediator) {
                 if (((RestrictedMousePanMediator) mediator).isDragging()) {
@@ -181,10 +184,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
     }
 
     protected void findResizableColumn(final GridWidget view,
+                                       final BaseGridRendererHelper.RenderingInformation renderingInformation,
                                        final double cx) {
         //Gather information on columns
-        final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if (renderingInformation == null) {
             return;
         }
@@ -243,13 +245,12 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
     }
 
     protected void findMovableColumns(final GridWidget view,
+                                      final BaseGridRendererHelper.RenderingInformation renderingInformation,
                                       final double headerRowsHeight,
                                       final double headerMinY,
                                       final double cx,
                                       final double cy) {
         //Gather information on columns
-        final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if (renderingInformation == null) {
             return;
         }
@@ -327,9 +328,11 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
     }
 
     protected void findMovableRows(final GridWidget view,
+                                   final BaseGridRendererHelper.RenderingInformation renderingInformation,
                                    final double cx,
                                    final double cy) {
         if (!isOverRowDragHandleColumn(view,
+                                       renderingInformation,
                                        cx)) {
             return;
         }
@@ -370,10 +373,9 @@ public class GridWidgetDnDMouseMoveHandler implements NodeMouseMoveHandler {
     }
 
     private boolean isOverRowDragHandleColumn(final GridWidget view,
+                                              final BaseGridRendererHelper.RenderingInformation renderingInformation,
                                               final double cx) {
         //Gather information on columns
-        final BaseGridRendererHelper rendererHelper = view.getRendererHelper();
-        final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
         if (renderingInformation == null) {
             return false;
         }
