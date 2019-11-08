@@ -245,6 +245,12 @@ public class BaseGridWidget extends Group implements GridWidget {
         return height;
     }
 
+    private double getHeight(final BaseGridRendererHelper.RenderingInformation renderingInformation) {
+        double height = renderer.getHeaderHeight();
+        height = height + renderingInformation.getAllRowHeights().stream().reduce(0d, Double::sum);
+        return height;
+    }
+
     @Override
     public void select() {
         isSelected = true;
@@ -715,7 +721,7 @@ public class BaseGridWidget extends Group implements GridWidget {
         final double headerRowsYOffset = renderingInformation.getHeaderRowsYOffset();
         final double y = headerRowsYOffset + headerYOffset;
 
-        final double height = getHeight() - headerRowsYOffset - headerYOffset;
+        final double height = getHeight(renderingInformation) - headerRowsYOffset - headerYOffset;
         double width = rendererHelper.getWidth(allColumns);
         if (!floatingColumns.isEmpty()) {
             width = width - (floatingBlockInformation.getX() + rendererHelper.getWidth(floatingColumns) - bodyBlockInformation.getX());

@@ -168,6 +168,11 @@ public class GridWidgetDnDMouseMoveHandlerTest {
                                                                                                                2,
                                                                                                                new ArrayList<Double>() {{
                                                                                                                    add(20.0);
+                                                                                                                   add(20.0);
+                                                                                                                   add(20.0);
+                                                                                                               }},
+                                                                                                               new ArrayList<Double>() {{
+                                                                                                                   add(20.0);
                                                                                                                    add(40.0);
                                                                                                                    add(60.0);
                                                                                                                }},
