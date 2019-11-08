@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import com.google.gwt.core.client.GWT;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -115,6 +116,15 @@ public class BaseGridRendererHelper {
         return rowOffset;
     }
 
+    private double getRowOffset(final int rowIndex,
+                                final List<Double> rowHeights) {
+        double rowOffset = 0;
+        for (int i = 0; i < rowIndex; i++) {
+            rowOffset = rowOffset + rowHeights.get(i);
+        }
+        return rowOffset;
+    }
+
     /**
      * Get the width of a set of columns, ignoring hidden columns.
      * @param columns The columns.
@@ -183,26 +193,39 @@ public class BaseGridRendererHelper {
         }
 
         //Identify rows to render
+        long currentTimeMillis;
+        currentTimeMillis = System.currentTimeMillis();
+        GWT.log(" - Pre- identify rows to render");
+
+        final List<Double> rowHeights = new ArrayList<>();
+        for (GridRow row : model.getRows()) {
+            rowHeights.add(row.getHeight());
+        }
+
         GridRow row;
         int minVisibleRowIndex = 0;
         if (model.getRowCount() > 0) {
             double clipTop = vpY - view.getComputedLocation().getY() - (isFloatingHeader ? 0.0 : renderer.getHeaderHeight());
-            while ((row = model.getRow(minVisibleRowIndex)).getHeight() < clipTop && minVisibleRowIndex < model.getRowCount() - 1) {
-                clipTop = clipTop - row.getHeight();
+            while (rowHeights.get(minVisibleRowIndex) < clipTop && minVisibleRowIndex < model.getRowCount() - 1) {
+                clipTop = clipTop - rowHeights.get(minVisibleRowIndex);
                 minVisibleRowIndex++;
             }
         }
 
         int maxVisibleRowIndex = minVisibleRowIndex;
         if (model.getRowCount() > 0) {
-            double clipBottom = vpY - view.getComputedLocation().getY() - renderer.getHeaderHeight() + vpHeight - getRowOffset(minVisibleRowIndex);
+            double clipBottom = vpY - view.getComputedLocation().getY() - renderer.getHeaderHeight() + vpHeight - getRowOffset(minVisibleRowIndex, rowHeights);
             while ((row = model.getRow(maxVisibleRowIndex)).getHeight() < clipBottom && maxVisibleRowIndex < model.getRowCount() - 1) {
                 clipBottom = clipBottom - row.getHeight();
                 maxVisibleRowIndex++;
             }
         }
+        GWT.log(" - Post- identify rows to render - " + (System.currentTimeMillis() - currentTimeMillis));
 
         //Identify columns to render
+        currentTimeMillis = System.currentTimeMillis();
+        GWT.log(" - Pre- identify columns to render");
+
         double x = 0;
         for (GridColumn<?> column : model.getColumns()) {
             allColumns.add(column);
@@ -245,9 +268,11 @@ public class BaseGridRendererHelper {
                 }
             }
         }
+        GWT.log(" - Post- identify columns to render - " + (System.currentTimeMillis() - currentTimeMillis));
 
         //Construct details of Floating and Body blocks
-        final double bodyOffsetY = getRowOffset(minVisibleRowIndex) + renderer.getHeaderHeight();
+        double visibleRowOffset = getRowOffset(minVisibleRowIndex, rowHeights);
+        final double bodyOffsetY = visibleRowOffset + renderer.getHeaderHeight();
         final double offsetX = (bodyColumns.size() > 0 ? getColumnOffset(bodyColumns.get(0)) : 0);
         final double floatingOffsetX = getFloatingColumnOffset();
 
@@ -266,14 +291,17 @@ public class BaseGridRendererHelper {
         // The minVisibleRowIndex corresponds to index zero and maxVisibleRowIndex corresponds to visibleRowOffsets.size() - 1.
         // This is useful to calculate the Y co-ordinate of each Row's top. It is calculated once and passed to
         // each column as an optimisation to prevent each column from recalculating the same values.
-        final List<Double> visibleRowOffsets = new ArrayList<Double>();
+        currentTimeMillis = System.currentTimeMillis();
+        GWT.log(" - Pre- calculate row offsets");
+
+        final List<Double> visibleRowOffsets = new ArrayList<>();
         if (model.getRowCount() > 0) {
-            double visibleRowOffset = getRowOffset(minVisibleRowIndex);
             for (int rowIndex = minVisibleRowIndex; rowIndex <= maxVisibleRowIndex; rowIndex++) {
                 visibleRowOffsets.add(visibleRowOffset);
-                visibleRowOffset = visibleRowOffset + model.getRow(rowIndex).getHeight();
+                visibleRowOffset = visibleRowOffset + rowHeights.get(rowIndex);
             }
         }
+        GWT.log(" - Post- calculate row offsets - " + (System.currentTimeMillis() - currentTimeMillis));
 
         final int headerRowCount = model.getHeaderRowCount();
         final double headerHeight = renderer.getHeaderHeight();
