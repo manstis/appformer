@@ -34,7 +34,6 @@ import com.ait.lienzo.client.core.event.NodeMouseDoubleClickHandler;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.google.gwt.core.client.GWT;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
@@ -58,6 +57,8 @@ import org.uberfire.ext.wires.core.grids.client.widget.grid.selections.impl.Base
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridSelectionManager;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.impl.DefaultGridLayer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.pinning.GridPinnedModeManager;
+
+import static org.uberfire.ext.wires.core.grids.client.util.Logging.log;
 
 /**
  * The base of all GridWidgets.
@@ -281,7 +282,7 @@ public class BaseGridWidget extends Group implements GridWidget {
                                          double alpha,
                                          BoundingBox bb) {
         long currentTimeMillis = 0;
-        GWT.log("=== columnCount: " + model.getColumns().size() + ", isSelection: " + context.isSelection() + " ===");
+        log("=== columnCount: " + model.getColumns().size() + ", isSelection: " + context.isSelection() + " ===");
         final boolean isSelectionLayer = context.isSelection();
         if (isSelectionLayer && (false == isListening())) {
             return;
@@ -301,28 +302,28 @@ public class BaseGridWidget extends Group implements GridWidget {
         if (!isSelectionLayer) {
             //If there's no RenderingInformation the GridWidget is not visible
             currentTimeMillis = System.currentTimeMillis();
-            GWT.log(" - Pre- prepare()");
+            log(" - Pre- prepare()");
             this.renderingInformation = prepare();
-            GWT.log(" - Post- prepare() - " + (System.currentTimeMillis() - currentTimeMillis));
+            log(" - Post- prepare() - " + (System.currentTimeMillis() - currentTimeMillis));
             if (renderingInformation == null) {
                 destroyDOMElementResources();
                 return;
             }
             currentTimeMillis = System.currentTimeMillis();
-            GWT.log(" - Pre- makeRenderingCommands()");
+            log(" - Pre- makeRenderingCommands()");
             makeRenderingCommands();
-            GWT.log(" - Post- makeRenderingCommands() - " + (System.currentTimeMillis() - currentTimeMillis));
+            log(" - Post- makeRenderingCommands() - " + (System.currentTimeMillis() - currentTimeMillis));
         }
 
         currentTimeMillis = System.currentTimeMillis();
-        GWT.log(" - Pre- layerRenderGroups()");
+        log(" - Pre- layerRenderGroups()");
         layerRenderGroups();
-        GWT.log(" - Post- layerRenderGroups() - " + (System.currentTimeMillis() - currentTimeMillis));
+        log(" - Post- layerRenderGroups() - " + (System.currentTimeMillis() - currentTimeMillis));
 
         currentTimeMillis = System.currentTimeMillis();
-        GWT.log(" - Pre- executeRenderQueueCommands()");
+        log(" - Pre- executeRenderQueueCommands()");
         executeRenderQueueCommands(isSelectionLayer);
-        GWT.log(" - Post- executeRenderQueueCommands() - " + (System.currentTimeMillis() - currentTimeMillis));
+        log(" - Post- executeRenderQueueCommands() - " + (System.currentTimeMillis() - currentTimeMillis));
 
         //Signal columns to free any unused resources
         if (!isSelectionLayer) {
@@ -335,11 +336,11 @@ public class BaseGridWidget extends Group implements GridWidget {
 
         //Then render to the canvas
         currentTimeMillis = System.currentTimeMillis();
-        GWT.log(" - Pre- super.drawWithoutTransforms()");
+        log(" - Pre- super.drawWithoutTransforms()");
         super.drawWithoutTransforms(context,
                                     alpha,
                                     bb);
-        GWT.log(" - Post- super.drawWithoutTransforms() - " + (System.currentTimeMillis() - currentTimeMillis));
+        log(" - Post- super.drawWithoutTransforms() - " + (System.currentTimeMillis() - currentTimeMillis));
     }
 
     private BaseGridRendererHelper.RenderingInformation prepare() {
@@ -360,9 +361,9 @@ public class BaseGridWidget extends Group implements GridWidget {
 
         //If there's no RenderingInformation the GridWidget is not visible
         long currentTimeMillis = System.currentTimeMillis();
-        GWT.log(" - Pre- getRenderingInformation()");
+        log(" - Pre- getRenderingInformation()");
         final BaseGridRendererHelper.RenderingInformation renderingInformation = rendererHelper.getRenderingInformation();
-        GWT.log(" - Post- getRenderingInformation() - " + (System.currentTimeMillis() - currentTimeMillis));
+        log(" - Post- getRenderingInformation() - " + (System.currentTimeMillis() - currentTimeMillis));
         if (renderingInformation == null) {
             return null;
         }

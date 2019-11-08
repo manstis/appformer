@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import com.google.gwt.core.client.GWT;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridData;
@@ -28,6 +27,8 @@ import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.renderers.grids.GridRenderer;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;
+
+import static org.uberfire.ext.wires.core.grids.client.util.Logging.log;
 
 /**
  * Helper for rendering a grid.
@@ -211,7 +212,7 @@ public class BaseGridRendererHelper {
         //Identify rows to render
         long currentTimeMillis;
         currentTimeMillis = System.currentTimeMillis();
-        GWT.log(" - Pre- identify rows to render");
+        log(" - Pre- identify rows to render");
 
         int minVisibleRowIndex = 0;
         if (model.getRowCount() > 0) {
@@ -230,11 +231,11 @@ public class BaseGridRendererHelper {
                 maxVisibleRowIndex++;
             }
         }
-        GWT.log(" - Post- identify rows to render - " + (System.currentTimeMillis() - currentTimeMillis));
+        log(" - Post- identify rows to render - " + (System.currentTimeMillis() - currentTimeMillis));
 
         //Identify columns to render
         currentTimeMillis = System.currentTimeMillis();
-        GWT.log(" - Pre- identify columns to render");
+        log(" - Pre- identify columns to render");
 
         double x = 0;
         for (GridColumn<?> column : model.getColumns()) {
@@ -278,7 +279,7 @@ public class BaseGridRendererHelper {
                 }
             }
         }
-        GWT.log(" - Post- identify columns to render - " + (System.currentTimeMillis() - currentTimeMillis));
+        log(" - Post- identify columns to render - " + (System.currentTimeMillis() - currentTimeMillis));
 
         //Construct details of Floating and Body blocks
         double visibleRowOffset = getRowOffset(minVisibleRowIndex, rowHeights);
@@ -302,7 +303,7 @@ public class BaseGridRendererHelper {
         // This is useful to calculate the Y co-ordinate of each Row's top. It is calculated once and passed to
         // each column as an optimisation to prevent each column from recalculating the same values.
         currentTimeMillis = System.currentTimeMillis();
-        GWT.log(" - Pre- calculate row offsets");
+        log(" - Pre- calculate row offsets");
 
         final List<Double> visibleRowOffsets = new ArrayList<>();
         if (model.getRowCount() > 0) {
@@ -311,7 +312,7 @@ public class BaseGridRendererHelper {
                 visibleRowOffset = visibleRowOffset + rowHeights.get(rowIndex);
             }
         }
-        GWT.log(" - Post- calculate row offsets - " + (System.currentTimeMillis() - currentTimeMillis));
+        log(" - Post- calculate row offsets - " + (System.currentTimeMillis() - currentTimeMillis));
 
         final int headerRowCount = model.getHeaderRowCount();
         final double headerHeight = renderer.getHeaderHeight();
